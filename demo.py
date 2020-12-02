@@ -1,12 +1,13 @@
 import argparse, os
 import torch
 from torch.autograd import Variable
-from scipy.ndimage import imread
+#from scipy.ndimage import imread
+import imageio
 from PIL import Image
 import numpy as np
 import time, math
 import matplotlib.pyplot as plt
-
+import cv2
 parser = argparse.ArgumentParser(description="PyTorch VDSR Demo")
 parser.add_argument("--cuda", action="store_true", help="use cuda?")
 parser.add_argument("--model", default="model/model_epoch_50.pth", type=str, help="model path")
@@ -43,10 +44,23 @@ if cuda:
 
 
 model = torch.load(opt.model, map_location=lambda storage, loc: storage)["model"]
+#-------------------------------------------------------------------------------------------
+#將imread改寫
+# im_gt_ycbcr = imageio.imread("Set5/" + opt.image + ".bmp", mode="YCbCr")
+# im_b_ycbcr = imageio.imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp", mode="YCbCr")
 
-im_gt_ycbcr = imread("Set5/" + opt.image + ".bmp", mode="YCbCr")
-im_b_ycbcr = imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp", mode="YCbCr")
-    
+#改寫如下
+# im_gt_ycbcr = cv2.imread("Set5/" + opt.image + ".bmp")
+# im_gt_ycbcr = cv2.cvtColor(im_gt_ycbcr , cv2.COLOR_BGR2YCR_CB)
+# im_b_ycbcr = cv2.imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp")
+# im_b_ycbcr = cv2.cvtColor(im_b_ycbcr  , cv2.COLOR_BGR2YCR_CB)
+im_gt_ycbcr = cv2.imread("Set5/" + "123456_" + ".bmp")
+im_gt_ycbcr = cv2.cvtColor(im_gt_ycbcr , cv2.COLOR_BGR2YCR_CB)
+im_b_ycbcr = cv2.imread("Set5/" + "123456_" + ".bmp")
+im_b_ycbcr = cv2.cvtColor(im_b_ycbcr  , cv2.COLOR_BGR2YCR_CB)
+
+
+#-------------------------------------------------------------------------------------------
 im_gt_y = im_gt_ycbcr[:,:,0].astype(float)
 im_b_y = im_b_ycbcr[:,:,0].astype(float)
 
