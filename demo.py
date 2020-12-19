@@ -54,9 +54,9 @@ model = torch.load(opt.model, map_location=lambda storage, loc: storage)["model"
 # im_gt_ycbcr = cv2.cvtColor(im_gt_ycbcr , cv2.COLOR_BGR2YCR_CB)
 # im_b_ycbcr = cv2.imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp")
 # im_b_ycbcr = cv2.cvtColor(im_b_ycbcr  , cv2.COLOR_BGR2YCR_CB)
-im_gt_ycbcr = cv2.imread("Set5/" + "123456_" + ".bmp")
+im_gt_ycbcr = cv2.imread("Set5/" + "777" + ".bmp")
 im_gt_ycbcr = cv2.cvtColor(im_gt_ycbcr , cv2.COLOR_BGR2YCR_CB)
-im_b_ycbcr = cv2.imread("Set5/" + "123456_" + ".bmp")
+im_b_ycbcr = cv2.imread("Set5/" + "777" + ".bmp")
 im_b_ycbcr = cv2.cvtColor(im_b_ycbcr  , cv2.COLOR_BGR2YCR_CB)
 
 
