@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 import cv2
 parser = argparse.ArgumentParser(description="PyTorch VDSR Demo")
 parser.add_argument("--cuda", action="store_true", help="use cuda?")
-parser.add_argument("--model", default="model/model_epoch_50.pth", type=str, help="model path")
+# parser.add_argument("--model", default="model/model_epoch_50.pth", type=str, help="model path")
+parser.add_argument("--model", default="checkpoint/model_epoch_48.pth", type=str, help="model path")
 parser.add_argument("--image", default="butterfly_GT", type=str, help="image name")
 parser.add_argument("--scale", default=4, type=int, help="scale factor, Default: 4")
 parser.add_argument("--gpus", default="0", type=str, help="gpu ids (default: 0)")
@@ -20,6 +21,7 @@ def PSNR(pred, gt, shave_border=0):
     pred = pred[shave_border:height - shave_border, shave_border:width - shave_border]
     gt = gt[shave_border:height - shave_border, shave_border:width - shave_border]
     imdff = pred - gt
+    #print("imdff=",imdff)
     rmse = math.sqrt(np.mean(imdff ** 2))
     if rmse == 0:
         return 100
@@ -50,22 +52,24 @@ model = torch.load(opt.model, map_location=lambda storage, loc: storage)["model"
 # im_b_ycbcr = imageio.imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp", mode="YCbCr")
 
 #改寫如下
-# im_gt_ycbcr = cv2.imread("Set5/" + opt.image + ".bmp")
-# im_gt_ycbcr = cv2.cvtColor(im_gt_ycbcr , cv2.COLOR_BGR2YCR_CB)
-# im_b_ycbcr = cv2.imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp")
-# im_b_ycbcr = cv2.cvtColor(im_b_ycbcr  , cv2.COLOR_BGR2YCR_CB)
-im_gt_ycbcr = cv2.imread("Set5/" + "777" + ".bmp")
+im_gt_ycbcr = cv2.imread("Set5/" + opt.image + ".bmp")
 im_gt_ycbcr = cv2.cvtColor(im_gt_ycbcr , cv2.COLOR_BGR2YCR_CB)
-im_b_ycbcr = cv2.imread("Set5/" + "777" + ".bmp")
+im_b_ycbcr = cv2.imread("Set5/"+ opt.image + "_scale_"+ str(opt.scale) + ".bmp")
 im_b_ycbcr = cv2.cvtColor(im_b_ycbcr  , cv2.COLOR_BGR2YCR_CB)
+# im_gt_ycbcr = cv2.imread("Set5/" + "778" + ".jpg")
+# im_gt_ycbcr = cv2.cvtColor(im_gt_ycbcr , cv2.COLOR_BGR2YCR_CB)
+# im_b_ycbcr = cv2.imread("Set5/" + "778" + ".jpg")
+# im_b_ycbcr = cv2.cvtColor(im_b_ycbcr  , cv2.COLOR_BGR2YCR_CB)
 
-
+# print(model.state_dict().keys())  #返回各層權重********************
+# print(model.input.weight)    #查看這層權重的值**********************
 #-------------------------------------------------------------------------------------------
 im_gt_y = im_gt_ycbcr[:,:,0].astype(float)
 im_b_y = im_b_ycbcr[:,:,0].astype(float)
 
 psnr_bicubic = PSNR(im_gt_y, im_b_y,shave_border=opt.scale)
-
+print("im_b_y shape",im_b_y)
+print("im_b_y no1_value",im_b_y[0][0])
 im_input = im_b_y/255.
 
 im_input = Variable(torch.from_numpy(im_input).float()).view(1, -1, im_input.shape[0], im_input.shape[1])
@@ -85,6 +89,8 @@ out = out.cpu()
 im_h_y = out.data[0].numpy().astype(np.float32)
 
 im_h_y = im_h_y * 255.
+print("im_h_y shape",im_h_y)
+print("im_h_y no1_value",im_h_y[0][0][0])
 im_h_y[im_h_y < 0] = 0
 im_h_y[im_h_y > 255.] = 255.
 

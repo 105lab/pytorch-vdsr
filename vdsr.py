@@ -9,7 +9,7 @@ class Conv_ReLU_Block(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         
     def forward(self, x):
-        print("Conv_ReLU_Block.size=",self.relu(self.conv(x)).size())
+        #print("Conv_ReLU_Block.size=",self.relu(self.conv(x)).size())
         return self.relu(self.conv(x))
         
         
@@ -30,19 +30,23 @@ class Net(nn.Module):
         layers = []
         for _ in range(num_of_layer):
             layers.append(block())
-            print("layers.size=",layers.size())
+            #print("layers.size=",layers.size())
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        print("x.size=",x.size())
+        #print("x.size=",x.size())
         residual = x
         out = self.relu(self.input(x))
-        print("out1.size=",out.size())
+        #print("out1.size=",out.size())
         out = self.residual_layer(out)
-        print("out2.size=",out.size())
+        #print("out2.size=",out.size())
         out = self.output(out)
-        print("out3.size=",out.size())
+        #print("out3.size=",out.size())
+        # print(out)
+        # print("\n-------------\n")
+        # print(residual)
         out = torch.add(out,residual)
-        print("out4.size=",out.size())
+        
+        #print("out4.size=",out.size())
         return out
  
